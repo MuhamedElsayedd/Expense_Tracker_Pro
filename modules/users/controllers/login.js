@@ -1,38 +1,44 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const login = async (req,res) =>{
-    const{email,password} =req.body;
-    const userModel =mongoose.model("users");
+const jwt = require('jsonwebtoken');
 
-    try{
-        const getUser = await userModel.findOne({
-            email:email
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    const userModel = mongoose.model("users");
+
+    try {
+        const getUser = await userModel.findOne({ email });
+        if (!getUser) {
+            return res.status(404).json({ message: "Email doesn't exist" });
+        }
+
+        const match = await bcrypt.compare(password, getUser.password);
+        if (!match) {
+            return res.status(401).json({ message: "Incorrect password" });
+        }
+
+        // if (!process.env.JWT_SECRET) {
+        //     throw new Error("JWT secret is not defined in env variables");
+        // }
+
+        const token = jwt.sign(
+            { _id: getUser._id, name: getUser.name },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        return res.status(200).json({
+            message: "User Logined successfuly",
+            accessToken: token
         });
-        if(!getUser) throw "Email isn't exists in the System";
 
-        const comparePassword = await bcrypt.compare(password,getUser.password);
-        if(!comparePassword) throw "Password and Email doesn't Match";
-    
-        res.status(201).json({
-            status:201,
-            message:"User Registered Successfuly!"
+    } catch (err) {
+        console.error("Login Error:", err);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: err.message || err
         });
-        return;
-
     }
-    catch(e)
-    {
-        res.status(404).json({
-            status:404,
-            message:e
-        })
-    }
-   
+};
 
-   
-
-    
-
-}
-
-module.exports =login;
+module.exports = login;
