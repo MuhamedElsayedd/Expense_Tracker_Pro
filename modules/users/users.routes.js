@@ -12,7 +12,6 @@ userRouter.post('/login',login);
 
 
 // Protected Routes
-
 userRouter.use(auth);
 userRouter.get('/dashboard',userDashboard);
 

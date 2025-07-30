@@ -19,8 +19,12 @@ const usersSchema = new mongoose.Schema({
         require:[true,"Add your balance"],
         default:0
     }
+},
+   {
+        timestamps:true,
+   }
 
-});
+);
 
 const usersModel =mongoose.model('users',usersSchema);
 module.exports=usersModel;

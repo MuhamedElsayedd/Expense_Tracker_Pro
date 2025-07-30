@@ -1,37 +1,47 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const register = async (req, res) => {
   const userModel = mongoose.model("users");
   const { name, email, password, confirm_password, balance } = req.body;
 
   try {
-    if (!name) throw "Name is required!";
-    if (!email) throw "Email is required!";
-    if (password !== confirm_password) throw "Password and confirm password don't match!";
-    if (password.length <= 5) throw "Password length must be greater than 5 characters";
+    // Basic validation
+    if (!name) throw new Error("Name is required!");
+    if (!email) throw new Error("Email is required!");
+    if (!password || !confirm_password) throw new Error("Password and confirmation are required!");
+    if (password !== confirm_password) throw new Error("Passwords do not match!");
+    if (password.length <= 5) throw new Error("Password must be longer than 5 characters.");
 
-    const getDuplicateEmail = await userModel.findOne({ email });
-    if (getDuplicateEmail) throw "This email already exists!";
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) throw new Error("Email is already registered!");
 
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-    const hashedPassword = await bcrypt.hash(password,12);
-    const data = await userModel.create({
-      name:name,
-      email:email,
-      password:hashedPassword,
-      balance:balance,
+    const userCreated = await userModel.create({
+      name,
+      email,
+      password: hashedPassword,
+      balance: balance ?? 0,
     });
+
+    const token = jwt.sign(
+      { _id: userCreated._id, name: userCreated.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     return res.status(201).json({
-      status: 201,
-      message:"User Registered Successfuly!",
-      data: data
+      status: "success",
+      message: "User registered successfully!",
+      accessToken: token,
     });
 
-  } catch (e) {
+  } catch (error) {
     return res.status(400).json({
-      status: 400,
-      message: e,
+      status: "error",
+      message: error.message || "Something went wrong!",
     });
   }
 };
