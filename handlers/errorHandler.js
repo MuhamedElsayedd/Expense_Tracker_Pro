@@ -1,25 +1,21 @@
 const errorHandler = (err, req, res, next) => {
-    console.error(err);
-  if(error){
-    if(error.message){
+  console.error(err);
+
+  if (err) {
+    if (err.message) {
       res.status(400).json({
         success: "failed",
-        message: e.message,
+        message: err.message,
       });
-
-    }
-    else{
+    } else {
       res.status(400).json({
         success: "failed",
-        message: e,
+        message: err,
       });
-
     }
-
-  }
-  else{
+  } else {
     next();
-
   }
 };
-  module.exports = errorHandler;
+
+module.exports = errorHandler;
