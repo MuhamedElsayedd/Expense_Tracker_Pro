@@ -17,10 +17,6 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "Incorrect password" });
         }
 
-        // if (!process.env.JWT_SECRET) {
-        //     throw new Error("JWT secret is not defined in env variables");
-        // }
-
         const token = jwt.sign(
             { _id: getUser._id, name: getUser.name },
             process.env.JWT_SECRET,
