@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const jwtManger  = require('../../../mangers/jwtManger');
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -17,11 +18,7 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "Incorrect password" });
         }
 
-        const token = jwt.sign(
-            { _id: getUser._id, name: getUser.name },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
+       const token = jwtManger(getUser);
 
         return res.status(200).json({
             message: "User Logined successfuly",

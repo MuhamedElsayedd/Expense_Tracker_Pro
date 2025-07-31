@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwtManger = require('../../../mangers/jwtManger');
 
 const register = async (req, res) => {
   const userModel = mongoose.model("users");
@@ -26,11 +26,7 @@ const register = async (req, res) => {
       balance: balance ?? 0,
     });
 
-    const token = jwt.sign(
-      { _id: userCreated._id, name: userCreated.name },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const token = jwtManger(userCreated);
 
     return res.status(201).json({
       status: "success",
