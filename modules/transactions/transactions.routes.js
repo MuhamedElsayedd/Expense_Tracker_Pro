@@ -2,6 +2,7 @@ const express =require('express');
 const auth = require('../../middlewares/auth');
 const addIncome = require('./controllers/addInCome');
 const addExpense = require('./controllers/addExpense');
+const getTransactions = require('./controllers/getTransactions');
 
 const transactionRouter =express.Router();
 
@@ -10,6 +11,7 @@ const transactionRouter =express.Router();
 transactionRouter.use(auth);
 transactionRouter.post('/addInCome',addIncome);
 transactionRouter.post('/addExpense',addExpense);
+transactionRouter.get('/',getTransactions);
 
 
 module.exports =transactionRouter;
