@@ -15,7 +15,7 @@ const usersSchema = new mongoose.Schema({
         require:[true,"password is requried!"]
     },
     balance:{
-        type:String,
+        type:Number,
         require:[true,"Add your balance"],
         default:0
     }
