@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 const jwtManger = require('../../../mangers/jwtManger');
 
 const register = async (req, res) => {
@@ -27,6 +28,28 @@ const register = async (req, res) => {
     });
 
     const token = jwtManger(userCreated);
+
+    // Looking to send emails in production? Check out our Email API/SMTP product!
+    var transport = nodemailer.createTransport({
+      host: "sandbox.smtp.mailtrap.io",
+      port: 587,
+      auth: {
+        user: "2b3385495d5f22",
+        pass: "ab05764117ed57"
+      }
+    });
+
+    transport.sendMail({
+      from: "info@expense-tracker-app.com",
+      to: email,
+      subject: "Welcome to Expense Tracker Pro App",
+      text: "Welcome to our app",
+      html: `<h1>Welcome to Expense Tracker Pro App</h1>
+      <p>Thank you for registering with us. We are glad to have you on board.</p>
+      <p>Your account has been created successfully.</p>
+      `
+    });
+    
 
     return res.status(201).json({
       status: "success",

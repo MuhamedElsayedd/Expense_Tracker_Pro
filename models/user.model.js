@@ -18,6 +18,9 @@ const usersSchema = new mongoose.Schema({
         type:Number,
         require:[true,"Add your balance"],
         default:0
+    },
+    resetPasswordCode:{
+        type:Number,
     }
 },
    {
