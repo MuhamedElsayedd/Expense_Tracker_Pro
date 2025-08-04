@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const emailManager = require('../../../managers/emailManager');
 
 const resetPassword = async (req, res, next) => {
   try {
@@ -12,7 +13,7 @@ const resetPassword = async (req, res, next) => {
 
     const getUserWithResetCode = await userModel.findOne({
       email: email,
-      resetPassword: resetPasswordCode, // كنت كاتب resetPassword غلط، المفروض resetPasswordCode
+      resetPasswordCode: resetPasswordCode, 
     });
 
     if (!getUserWithResetCode) throw new Error("Reset Code doesn't Match");
@@ -26,6 +27,13 @@ const resetPassword = async (req, res, next) => {
         resetPasswordCode: ""
       },
       { runValidators: true }
+    );
+
+    await emailManager(
+      email,
+      "Password Reseted Successfuly!",
+      "<h1>Password Reseted Successfuly</h1>,<br>Go Login Our App and Enjoy!",
+      "Password Reseted Successfuly!"
     );
 
     res.status(200).json({

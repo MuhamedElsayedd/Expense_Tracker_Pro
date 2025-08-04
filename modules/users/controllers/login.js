@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const jwtManger  = require('../../../mangers/jwtManger');
+const jwtManger  = require('../../../managers/jwtManger');
 
 const login = async (req, res) => {
     const { email, password } = req.body;
