@@ -3,7 +3,7 @@ const validator = require('validator');
 
 const deleteTransaction = async (req, res) => {
     const transactionModel = mongoose.model("transactions");
-    const userModel = mongoose.model("users"); // ✅ ضروري
+    const userModel = mongoose.model("users"); 
 
     const { transaction_id } = req.params;
 
