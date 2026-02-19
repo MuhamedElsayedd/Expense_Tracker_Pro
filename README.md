@@ -15,8 +15,6 @@ Expense Tracker Pro is a full-stack Node.js application that helps users manage 
 
 ---
 
-
-
 ## 🛠️ Tech Stack
 
 | Layer         | Technology             |
